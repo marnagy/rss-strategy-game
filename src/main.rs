@@ -59,8 +59,8 @@ impl GameState {
             GameAction::Build => {
                 if self.resources.gold >= 1000 && self.resources.wood >= 500 {
                     self.resources = Resources {
-                        gold: self.resources.gold - 1000,
-                        wood: self.resources.wood - 500,
+                        gold: self.resources.gold - 800,
+                        wood: self.resources.wood - 400,
                     };
                     self.do_build_action(Buildings::Farm);
                 }
