@@ -1,0 +1,45 @@
+Page:1
+Final:N
+Text:Ocitol si sa hlboko v močarine/bažine a hľadáš cestu von. V tom zbadáš bránu vysokú aspoň 3 metre. Stráži ju však rytier s mečom po boku a namaľovaným žltým perom na hrudi.
+MoveToPage:2;Text:Preclečieš sa za rytiera a namaľuješ si žlté pero na hruď.
+MoveToPage:3;Text:Preclečieš sa za rytiera a namaľuješ si modré pero na hruď.
+MoveToPage:4;Text:Pristúpiš k nemu a nastavíš ruku na "high-five".
+---
+Page:2
+Final:Y
+Text:Jeho helma sa pomaly skloní a zase dvihne, akoby sa ti pozeral do očí, aj keď ty do jeho nevidíš. "Žlté pero je môj znak, podvodník.", povie a tvoje srdce okúsi chlad jeho čepele.
+Success:false
+---
+Page:3
+Final:N
+Text:Rytier ťa zastaví a pýta sa "Môj veliteľ má znak modré pero. Ak si naozaj môj veliteľ, ako sa volám ja?"
+MoveToPage:5;Text:Odpovieš "Peter".
+MoveToPage:5;Text:Odpovieš "Adam".
+MoveToPage:6;Text:Odpovieš "Nikdy sme si nepovedali mená. Spoznávame sa podľa farby pier na hrudi."
+---
+Page:4
+Final:N
+Text:Tľapne si s tebou a nastane ticho.
+MoveToPage:7;Text:Ostaneš nemo stáť.
+MoveToPage:8;Text:Otočíš sa a kráčaš preč.
+---
+Page:5
+Final:Y
+Text:"Nepoznáš moje meno, podvodník. Spoznávame sa podľa farby pera na hrudi", povie a zapichne ti meč do hrude.
+Success:false
+---
+Page:6
+Final:Y
+Text:Strážnik prikývne a otvorí ti bránu. Tá skrýva mesto s elektrinou a ty vieš, že si už v bezpečí.
+Success:true
+---
+Page:7
+Final:Y
+Text:Strážnik prikývne a otvorí ti bránu. Tá skrýva mesto s elektrinou a ty vieš, že si už v bezpečí.
+Success:true
+---
+Page:8
+Final:Y
+Text:V močiari/bažine stráviš nasledujúcich 5 dní a umrieš od hladu.
+Success:false
+---
