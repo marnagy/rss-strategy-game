@@ -42,7 +42,7 @@ impl GameState {
 
     fn game_loop(&mut self) {
         let mut current_page;
-        while true {
+        loop {
             current_page = self.pages.get(&self.current_page_num).unwrap();
             println!("You are on page {}:", current_page.Number);
 
@@ -90,28 +90,6 @@ impl GameState {
         }
     }
 }
-
-
-// fn get_harvest_action() -> ResourceType {
-//     loop {
-//         println!("What do you want to harvest:");
-//         println!("1: Gold");
-//         println!("2: Wood");
-
-//         let mut action: String = String::new();
-//         stdin().read_line(&mut action).unwrap();
-
-//         let action_result = action.trim().parse::<i32>();
-//         match action_result {
-//             Ok(act) => match act {
-//                 1 => return ResourceType::Gold(500),
-//                 2 => return ResourceType::Wood(500),
-//                 _ => continue,
-//             },
-//             Err(_) => continue,
-//         }
-//     }
-// }
 
 struct Page {
     Number: i32,
