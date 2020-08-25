@@ -28,87 +28,69 @@ struct Resources {
 }
 
 struct GameState {
-    current_turn: i32,
-    end_turn: i32,
-    resources: Resources,
-    buildings: Vec<Buildings>,
+    current_page_num: i32,
+    pages: HashMap<i32, Page>
 }
 
 impl GameState {
-    fn new(end_turn: i32) -> GameState {
+    fn new( pages: HashMap<i32, Page>) -> GameState {
         GameState {
-            current_turn: 0,
-            end_turn,
-            resources: Resources { gold: 0, wood: 0 },
-            buildings: Vec::new(),
+            current_page_num: 1,
+            pages
         }
     }
 
     fn game_loop(&mut self) {
-        while self.current_turn < self.end_turn {
-            println!("Turn {} started.", self.current_turn);
+        let mut current_page;
+        while true {
+            current_page = self.pages.get(&self.current_page_num).unwrap();
+            println!("You are on page {}:", current_page.Number);
 
-            let action: GameAction = get_user_action();
+            println!("Story:{}", current_page.Text);
+            println!();
 
-            self.do_action(action);
-
-            // clear screen
-
-            self.current_turn += 1;
-        }
-    }
-
-    fn do_action(&mut self, action: GameAction) {
-        match action {
-            GameAction::Build => {
-                if self.resources.gold >= 1000 && self.resources.wood >= 500 {
-                    self.resources = Resources {
-                        gold: self.resources.gold - 800,
-                        wood: self.resources.wood - 400,
-                    };
-                    self.do_build_action(Buildings::Farm);
+            if !current_page.Final {
+                println!("Your choices are:");
+                for (num, item) in current_page.Moves.iter().enumerate() {
+                    println!("{0}: {1}", num + 1, item.text);
                 }
+
+                let item_num = self.get_user_action();
+    
+                self.do_action(item_num);
             }
-            GameAction::Harvest(resource) => self.do_harvest_action(resource),
-            _ => println!("Action not implemented"),
+            else{
+                match current_page.Success {
+                    true => println!("You win."),
+                    false => println!("You lose.")
+                };
+                break;
+            }
         }
     }
 
-    fn do_build_action(&mut self, building: Buildings) {
-        self.buildings.push(building);
+    fn do_action(&mut self, item_num: i32) {
+        let next_page_num = self.pages.get(&self.current_page_num).unwrap().Moves.get(item_num as usize).unwrap().next_page;
+        self.current_page_num = next_page_num;
     }
 
-    fn do_harvest_action(&mut self, resources: ResourceType) {
-        match resources {
-            ResourceType::Gold(gold) => self.resources.gold += gold,
-            ResourceType::Wood(wood) => self.resources.wood += wood,
+    fn get_user_action(&mut self) -> i32 {
+        loop {
+            let mut line = String::new();
+            stdin().read_line(&mut line).unwrap();
+    
+            let action_num : i32 = line.trim().parse().unwrap();
+    
+            if action_num >= 1 || action_num <= self.pages.get(&self.current_page_num).unwrap().Moves.len() as i32 {
+                return action_num - 1;
+            }
+            else{
+                continue;
+            }
         }
-
-        println!("Your resources: {:?}", self.resources);
     }
 }
 
-fn get_user_action() -> GameAction {
-    loop {
-        // println!("Choose your action:");
-        // println!("1: Build");
-        // println!("2: Harvest");
-
-        // let mut action: String = String::new();
-        // stdin().read_line(&mut action).unwrap();
-
-        // let action_result = action.trim().parse::<i32>();
-        // match action_result {
-        //     Ok(act) => match act {
-        //         1 => return GameAction::Build,
-        //         2 => return GameAction::Harvest(get_harvest_action()),
-        //         3 => return GameAction::Pass,
-        //         _ => continue,
-        //     },
-        //     Err(_) => continue,
-        // }
-    }
-}
 
 // fn get_harvest_action() -> ResourceType {
 //     loop {
@@ -151,7 +133,7 @@ impl Page {
         let reader = BufReader::new(file);
 
         for line in reader.lines().map(|l| l.unwrap()) {
-            println!("Line -> {}", line);
+            //println!("Line -> {}", line);
             if line.contains(":") && line.contains(";"){
                 let parts: Vec<&str> = line.split(';').collect();
                 let parts0 : Vec<&str> = parts[0].split(":").collect();
@@ -165,7 +147,7 @@ impl Page {
                 let parts: Vec<&str> = line.split(':').collect();
                 let part0 = String::from(parts[0]);
                 let part1 = String::from(parts[1]);
-                println!("Line parts: 0 -> {0}, 1 -> {1}", part0, part1);
+                //println!("Line parts: 0 -> {0}, 1 -> {1}", part0, part1);
                 buf.insert( part0, part1 );
             }
 
@@ -187,7 +169,7 @@ impl Page {
                 else if final_attr == "N" {
                     pages.insert( number_attr, Page {
                         Number: number_attr,
-                        Final: true,
+                        Final: false,
                         Text: text_attr,
                         Moves: moves,
                         Success: false
@@ -207,6 +189,6 @@ impl Page {
 
 fn main() {
     let pages = Page::from( File::open( String::from("pages.txt")).unwrap() );
-    let mut game = GameState::new( pages.len() as i32);
+    let mut game = GameState::new( pages );
     game.game_loop();
 }
